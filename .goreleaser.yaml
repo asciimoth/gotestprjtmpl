@@ -22,6 +22,14 @@ builds:
       - linux
       - windows
       - darwin
+    goarch:
+      - 386
+      - amd64
+      - arm
+      - arm64
+
+universal_binaries:
+  - replace: true
 
 archives:
   - formats: [tar.gz]
@@ -38,6 +46,25 @@ archives:
       - goos: windows
         formats: [zip]
 
+nfpms:
+  - maintainer: John Doe <jdoe@example.com>
+    homepage: 'https://example.com/'
+    description: Usefull tool
+    license: "Apache OR MIT"
+    formats:
+      - deb
+      - rpm
+      - archlinux
+    dependencies:
+      - bash # For example
+    recommends:
+      - git # For example
+    section: default
+
+signs:
+  - artifacts: all
+    args: [ "-u", "C5C84658CCFD7E8E71DEE933AF3AE54FC3A35C9F", "--output", "${signature}", "--detach-sign", "${artifact}" ]
+
 changelog:
   sort: asc
   filters:
@@ -51,3 +78,4 @@ release:
     ---
 
     Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
+
