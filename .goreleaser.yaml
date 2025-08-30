@@ -8,8 +8,62 @@
 
 version: 2
 
+before:
+  hooks:
+    # You may remove this if you don't use go modules.
+    - go mod tidy
+    # you may remove this if you don't need go generate
+    - go generate ./...
+
 builds:
-  - skip: true
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - 386
+      - amd64
+      - arm
+      - arm64
+
+universal_binaries:
+  - replace: true
+
+archives:
+  - formats: [tar.gz]
+    # this name template makes the OS and Arch compatible with the results of `uname`.
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+    # use zip for windows archives
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+nfpms:
+  - maintainer: John Doe <jdoe@example.com>
+    homepage: 'https://example.com/'
+    description: Usefull tool
+    license: "Apache OR MIT"
+    formats:
+      - deb
+      - rpm
+      - archlinux
+    dependencies:
+      - bash # For example
+    recommends:
+      - git # For example
+    section: default
+
+signs:
+  - artifacts: all
+    args: [ "-u", "C5C84658CCFD7E8E71DEE933AF3AE54FC3A35C9F", "--output", "${signature}", "--detach-sign", "${artifact}" ]
 
 changelog:
   sort: asc
@@ -21,4 +75,8 @@ changelog:
 release:
   # What to do with the release notes in case there the release already exists.
   mode: replace
+  footer: >-
 
+    ---
+
+    Released by [GoReleaser](https://github.com/goreleaser/goreleaser).
