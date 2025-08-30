@@ -11,6 +11,9 @@ version: 2
 builds:
   - skip: true
 
+archives:
+  - skip: true
+
 release:
   # What to do with the release notes in case there the release already exists.
   mode: replace
