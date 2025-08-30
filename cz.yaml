@@ -8,8 +8,10 @@ commitizen:
   #name: cz_conventional_commits
   name: cz_customize
   customize:
+    schema: "<type>(<scope>)?: <message>"
+    schema_pattern: "^(?:bump|feat|fix|perf|refactor|docs|style|test|chore|build|ci|revert|other)(?:\\([A-Za-z0-9_\\-\\/\\.]+\\))?(!)?:\\s.+$"
     message_template: >
-      {{ change_type }}{% if is_breaking %}!{% endif %}{% if scope %}({{ scope }}){% endif %}: {{ message }}
+      {{ change_type }}{% if scope %}({{ scope }}){% endif %}{% if is_breaking %}!{% endif %}: {{ message }}
       {% if body %}
 
       {{ body }}{% endif %}
