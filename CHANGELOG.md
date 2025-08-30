@@ -1,17 +1,45 @@
-## v0.2.0 (2025-08-30)
+## [0.3.0] - 2025-08-30
 
-### Feat
+### 🚀 Features
 
-- aaaaaaaa
+- Sadfassdfasdf
 
-## v0.1.0 (2025-08-28)
+### 🐛 Bug Fixes
 
-### Feat
+- Add W
 
-- add goreleaser
+### ⚙️ Miscellaneous Tasks
 
-## v0.0.2 (2025-08-28)
+- Wooooooooooooo
+- Chore things
+## [0.2.0] - 2025-08-29
 
-### Fix
+### 🚀 Features
 
-- init project
+- Aaaaaaaa
+
+### 💼 Other
+
+- Version 0.1.0 → 0.2.0
+
+### ⚙️ Miscellaneous Tasks
+
+- Update goreleaser config
+## [0.1.0] - 2025-08-28
+
+### 🚀 Features
+
+- Add goreleaser
+
+### 💼 Other
+
+- Version 0.0.2 → 0.1.0
+## [0.0.2] - 2025-08-28
+
+### 🐛 Bug Fixes
+
+- Init project
+
+### 💼 Other
+
+- Version 0.0.1 → 0.0.2
