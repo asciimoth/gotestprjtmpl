@@ -8,10 +8,8 @@
 
 version: 2
 
-builds: []
-
-archives: []
-
+builds:
+  - skip: true
 
 release:
   # What to do with the release notes in case there the release already exists.
