@@ -73,6 +73,8 @@ changelog:
       - "^test:"
 
 release:
+  # What to do with the release notes in case there the release already exists.
+  mode: replace
   footer: >-
 
     ---
