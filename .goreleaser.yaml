@@ -77,6 +77,6 @@ release:
   mode: replace
 
 publishers:
-  - name: GH Pages deb/rpm repo
-    cmd: {{ .Env.MYREPO }}/maintain add {{ abs .ArtifactPath }}
+  - name: "GH Pages deb/rpm repo"
+    cmd: "{{ .Env.MYREPO }}/maintain add {{ abs .ArtifactPath }}"
 
