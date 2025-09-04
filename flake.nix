@@ -41,7 +41,8 @@
               enable = true;
               description = "TODO";
               entry = let script = pkgs.writeShellScript "gomod2nix-hook" ''
-                # echo "AAAAAAAAAAAAAa" > aaaaaaa
+                gomod2nix generate
+                git add gomod2nix.toml
               ''; in builtins.toString script;
               stages = [ "pre-commit" ];
             };
