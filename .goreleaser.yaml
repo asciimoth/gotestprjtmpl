@@ -85,5 +85,5 @@ announce:
   telegram:
     enabled: true
     chat_id: -1002950691807
-    message_template: '{{ mdv2escape .ProjectName }} {{ mdv2escape .Tag }} is out{{ mdv2escape "!" }} Check it out at {{ mdv2escape .ReleaseURL }}'
+    message_template: '[{{ mdv2escape .ProjectName }} {{ mdv2escape .Tag }}]({{ mdv2escape .ReleaseURL }}) is out{{ mdv2escape "!" }}'
 
