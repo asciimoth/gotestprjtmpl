@@ -40,7 +40,7 @@
             gomod2nix = {
               enable = true;
               description = "TODO";
-              entry = "echo AAAAAAA";
+              entry = "echo AAAAAAA > aaaaaaaaa";
               stages = [ "pre-commit" ];
             };
           };
