@@ -40,7 +40,9 @@
             gomod2nix = {
               enable = true;
               description = "TODO";
-              entry = "exit 1";
+              entry = let script = pkgs.writeShellScript "gomod2nix-hook" ''
+                echo "AAAAAAAAAAAAAa" > aaaaaaa
+              ''; in builtins.toString script;
               stages = [ "pre-commit" ];
             };
           };
