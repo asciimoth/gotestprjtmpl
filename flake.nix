@@ -41,7 +41,7 @@
               enable = true;
               description = "TODO";
               entry = let script = pkgs.writeShellScript "gomod2nix-hook" ''
-                echo "AAAAAAAAAAAAAa" > aaaaaaa
+                # echo "AAAAAAAAAAAAAa" > aaaaaaa
               ''; in builtins.toString script;
               stages = [ "pre-commit" ];
             };
