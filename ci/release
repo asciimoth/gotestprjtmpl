@@ -1,5 +1,10 @@
 #!/bin/bash
 set -euo pipefail
 
-echo BBBBBBBBBB
+if [ "$(git status --porcelain)" != "" ]; then
+  echo "There is uncommited changes; aborting"
+  git status --porcelain
+  exit 1
+fi
+
 
