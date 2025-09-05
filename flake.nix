@@ -26,7 +26,7 @@
 
       app = pkgs.buildGoApplication {
         name = "gotestprjtmpl";
-        # version = "0.1.0";
+        version = builtins.readFile ./VERSION;
         src = ./.;
         modules = ./gomod2nix.toml;
         # buildInputs = with pkgs; [ ];
