@@ -37,6 +37,8 @@
         # buildInputs = with pkgs; [ ];
       };
 
+      release = pkgs.writeShellScriptBin "release" (builtins.readFile ./ci/release);
+
       checks = {
         pre-commit-check = pre-commit-hooks.lib.${system}.run {
           src = ./.;
@@ -84,6 +86,8 @@
           govulncheck
 
           gomod2nix.packages.${system}.default
+
+          release
         ];
       };
 
