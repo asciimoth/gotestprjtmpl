@@ -45,10 +45,15 @@
             gofmt.enable = true;
             gotidy = {
               enable = true;
-              description = "TODO";
+              description = "Makes sure go.mod matches the source code";
               entry = let script = pkgs.writeShellScript "gotidyhook" ''
                 go mod tidy -v
-                git add go.mod go.sum
+                if [ -f "go.mod" ]; then
+                  git add go.mod
+                fi
+                if [ -f "go.sum" ]; then
+                  git add go.sum
+                fi
               ''; in builtins.toString script;
               stages = [ "pre-commit" ];
             };
