@@ -1,3 +1,8 @@
+# Usage:
+#   nix profile add github:asciimoth/gotestprjtmpl
+#   nix profile remove gotestprjtmpl
+#   nix shell github:asciimoth/gotestprjtmpl
+# Update: nix flake update
 {
   description = "Go test project template";
   inputs = {
