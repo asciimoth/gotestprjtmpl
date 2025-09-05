@@ -1,3 +1,4 @@
+// Pckage comment
 package main
 
 import (
