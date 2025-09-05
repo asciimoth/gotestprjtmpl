@@ -42,14 +42,25 @@
           src = ./.;
           hooks = {
             govet.enable = true;
-            gomod2nix = {
+            gofmt.enable = true;
+            gotidy = {
               enable = true;
               description = "TODO";
+              entry = let script = pkgs.writeShellScript "gotidyhook" ''
+                go mod tidy -v
+                git add go.mod go.sum
+              ''; in builtins.toString script;
+              stages = [ "pre-commit" ];
+            };
+            gomod2nix = {
+              enable = true;
+              description = "Generates gomod2nix.toml";
               entry = let script = pkgs.writeShellScript "gomod2nix-hook" ''
                 gomod2nix generate
                 git add gomod2nix.toml
               ''; in builtins.toString script;
               stages = [ "pre-commit" ];
+              after = [ "gotidy" ];
             };
           };
         };
@@ -62,6 +73,7 @@
           commitizen
           goreleaser
           git-cliff
+          govulncheck
 
           gomod2nix.packages.${system}.default
         ];
