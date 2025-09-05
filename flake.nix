@@ -41,6 +41,7 @@
         pre-commit-check = pre-commit-hooks.lib.${system}.run {
           src = ./.;
           hooks = {
+            commitizen.enable = true;
             govet.enable = true;
             gofmt.enable = true;
             golangci-lint.enable = true;
