@@ -12,6 +12,10 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 - Fix go mod tidy git hook
 
+### 💼 Other
+
+- Bump to v0.10.0
+
 ### 📚 Documentation
 
 - Add basic instructions about flake.nix usage

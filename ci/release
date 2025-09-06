@@ -183,6 +183,12 @@ function bump() {
   echo "$CHANGELOG" > CHANGELOG.md
 
   commit "bump: bump to $NEW_VERSION"
+
+  echo "Running git push..."
+  git push
+
+  echo "Running git push --tag..."
+  got push --tag
 }
 
 # TODO: add help flag
