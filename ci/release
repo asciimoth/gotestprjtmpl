@@ -188,7 +188,7 @@ function bump() {
   git push
 
   echo "Running git push --tag..."
-  got push --tag
+  git push --tags
 }
 
 # TODO: add help flag

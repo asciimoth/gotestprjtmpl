@@ -15,6 +15,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 ### 💼 Other
 
 - Bump to v0.10.0
+- Bump to v0.10.0
 
 ### 📚 Documentation
 
