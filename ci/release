@@ -29,7 +29,7 @@ function check-tools() {
     return
   fi
 
-  deps=("go" "golangci-lint" "govulncheck" "gomod2nix" "goreleaser" "git" "git-cliff" "yq")
+  deps=("go" "golangci-lint" "govulncheck" "gomod2nix" "goreleaser" "git" "git-cliff" "yq" "jq")
   for d in ${deps[@]}; do
     if ! command -v "$d" >/dev/null 2>&1
     then
@@ -129,6 +129,62 @@ function commit() {
   git commit -m "$1"
 }
 
+function prepare-go() {
+  if [ "${SKIP_GO_GENERATE-}" == "true" ]; then
+    echo "Skipping go generate..."
+  else
+    echo "Running go generate..."
+    go generate ./...
+    commit "chore: apply go generate"
+  fi
+
+  if [ "${SKIP_GO_TIDY-}" == "true" ]; then
+    echo "Skipping go mod tidy..."
+  else
+    echo "Running go mod tidy..."
+    go mod tidy
+    commit "chore: apply go mod tidy"
+  fi
+
+  echo "Running tests..."
+  go test
+
+  echo "Running golangci-lint..."
+  golangci-lint run ./...
+
+  if [ "${SKIP_GOVULN_CHECK-}" == "true" ]; then
+    echo "Skipping govulncheck..."
+  else
+    echo "Running govulncheck..."
+    govulncheck
+  fi
+}
+
+function bump() {
+  if [ ! "$#" -gt 0 ]; then
+    NEW_VERSION="$(git cliff --bump --context | jq -r .[0].version)"
+    CHANGELOG="$(git cliff --bump)"
+  else
+    # if $1 in major|minor|patch, run git cliff
+    if [[ "major|minor|patch" == *"$1"* ]]; then
+      NEW_VERSION="$(git cliff --bump "$1" --context | jq -r .[0].version)"
+      CHANGELOG="$(git cliff --bump "$1")"
+    else
+      NEW_VERSION="$1"
+      CHANGELOG="$(git cliff --bump --tag "$NEW_VERSION")"
+    fi
+  fi
+
+  echo "Bumping to $NEW_VERSION"
+
+  # Save with stripping leading v
+  echo "${NEW_VERSION#v}" > VERSION
+
+  echo "$CHANGELOG" > CHANGELOG.md
+
+  commit "bump: bump to $NEW_VERSION"
+}
+
 # TODO: add help flag
 # TODO: add flags to skip things
 # TODO: add flags to change config file
@@ -141,34 +197,10 @@ cd "$(git rev-parse --show-toplevel)"
 
 #read-config
 
-if [ "${SKIP_GO_GENERATE-}" == "true" ]; then
-  echo "Skipping go generate..."
-else
-  echo "Running go generate..."
-  go generate ./...
-  commit "chore: apply go generate"
-fi
+prepare-go
 
-if [ "${SKIP_GO_TIDY-}" == "true" ]; then
-  echo "Skipping go mod tidy..."
-else
-  echo "Running go mod tidy..."
-  go mod tidy
-  commit "chore: apply go mod tidy"
-fi
+bump "$@"
 
-echo "Running tests..."
-go test
-
-echo "Running golangci-lint..."
-golangci-lint run ./...
-
-if [ "${SKIP_GOVULN_CHECK-}" == "true" ]; then
-  echo "Skipping govulncheck..."
-else
-  echo "Running govulncheck..."
-  govulncheck
-fi
 
 
 

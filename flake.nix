@@ -88,6 +88,7 @@
           gomod2nix.packages.${system}.default
 
           yq
+          jq
 
           release
         ];
