@@ -10,7 +10,7 @@ function check-git() {
     exit 1
   fi
 
-  if [ "$SKIP_GIT_CHECK" == "true" ]; then
+  if [ "${SKIP_GIT_CHECK-}" == "true" ]; then
     echo "Skipping git check..."
     return
   fi
@@ -24,7 +24,7 @@ function check-git() {
 }
 
 function check-tools() {
-  if [ "$SKIP_TOOLS_CHECK" == "true" ]; then
+  if [ "${SKIP_TOOLS_CHECK-}" == "true" ]; then
     echo "Skipping tools check..."
     return
   fi
@@ -55,16 +55,12 @@ function load-pass() {
 }
 
 # Input format:
-#   `bw:object_type:id` - load object of specified type with specified id
+#   `bitwarden:object_type:id` - load object of specified type with specified id
 function load-bitwarden() {
   bw_type="$(echo "$1" | awk -F: '{print $2}')"
   bw_id="$(echo "$1" | awk -F: '{print $3}')"
   echo "Loading '$bw_type' of '$bw_id' from bitwarden" >&2
   bw get "$bw_type" "$bw_id" < /dev/tty
-}
-
-function load-bitwarden-secrets() {
-  echo "TODO"
 }
 
 # $1 - env variable name
@@ -87,11 +83,8 @@ function load-secret() {
     pass)
       export "$1=$(load-pass "$2")"
       ;;
-    bw)
+    bitwarden)
       export "$1=$(load-bitwarden "$2")"
-      ;;
-    bws)
-      export "$1=$(load-bitwarden-secrets "$2")"
       ;;
     *)
       echo "Unknown secret source type for $1; Check your $CONFIG_FILE; aborting"
@@ -125,6 +118,17 @@ function read-config() {
   fi
 }
 
+# commit "commit message"
+# Do nothing if there is git index is clean
+function commit() {
+  if [ "$(git status --porcelain)" == "" ]; then
+    # Git index is clean
+    return
+  fi
+  git add --all
+  git commit -m "$1"
+}
+
 # TODO: add help flag
 # TODO: add flags to skip things
 # TODO: add flags to change config file
@@ -135,9 +139,38 @@ check-tools
 # cd to repo root
 cd "$(git rev-parse --show-toplevel)"
 
-read-config
+#read-config
 
-echo "$DEFAULT_GPG_FPR"
-echo "$GITHUB_TOKEN"
-echo "$TELEGRAM_TOKEN"
+if [ "${SKIP_GO_GENERATE-}" == "true" ]; then
+  echo "Skipping go generate..."
+else
+  echo "Running go generate..."
+  go generate ./...
+  commit "chore: apply go generate"
+fi
+
+if [ "${SKIP_GO_TIDY-}" == "true" ]; then
+  echo "Skipping go mod tidy..."
+else
+  echo "Running go mod tidy..."
+  go mod tidy
+  commit "chore: apply go mod tidy"
+fi
+
+echo "Running tests..."
+go test
+
+echo "Running golangci-lint..."
+golangci-lint run ./...
+
+if [ "${SKIP_GOVULN_CHECK-}" == "true" ]; then
+  echo "Skipping govulncheck..."
+else
+  echo "Running govulncheck..."
+  govulncheck
+fi
+
+
+
+
 

@@ -2,7 +2,7 @@ DEFAULT_GPG_FPR: C5C84658CCFD7E8E71DEE933AF3AE54FC3A35C9F # ASCII Moth
 
 secrets:
   GITHUB_TOKEN: pass:web/github.com:token_WritePackagesForGoreleaser2
-  TELEGRAM_TOKEN: bw:password:moth releasing bot
+  TELEGRAM_TOKEN: bitwarden:password:moth releasing bot
   #TELEGRAM_TOKEN2: bw:password:moth releasing bot
   #SECRET1: AAAAAA
   #SECRET2:
