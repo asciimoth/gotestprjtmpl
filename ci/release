@@ -54,6 +54,19 @@ function load-pass() {
   fi
 }
 
+# Input format:
+#   `bw:object_type:id` - load object of specified type with specified id
+function load-bitwarden() {
+  bw_type="$(echo "$1" | awk -F: '{print $2}')"
+  bw_id="$(echo "$1" | awk -F: '{print $3}')"
+  echo "Loading '$bw_type' of '$bw_id' from bitwarden" >&2
+  bw get "$bw_type" "$bw_id" < /dev/tty
+}
+
+function load-bitwarden-secrets() {
+  echo "TODO"
+}
+
 # $1 - env variable name
 # $2 - source
 # If $2 == ENV, env var with name $1 must be set before running this script
@@ -70,10 +83,15 @@ function load-secret() {
     return
   fi
   source_type=$(echo "$2" | awk -F: '{print $1}')
-  # TODO: add biwarden loader
   case "$source_type" in
     pass)
       export "$1=$(load-pass "$2")"
+      ;;
+    bw)
+      export "$1=$(load-bitwarden "$2")"
+      ;;
+    bws)
+      export "$1=$(load-bitwarden-secrets "$2")"
       ;;
     *)
       echo "Unknown secret source type for $1; Check your $CONFIG_FILE; aborting"
@@ -97,7 +115,7 @@ function read-config() {
     # Load regular vars
     while IFS='=' read -r key value; do
       # Skip secrets dict
-      if [ "$key" == "secrets"]; then
+      if [ "$key" == "secrets" ]; then
         return
       fi
       export "$key=$value"
