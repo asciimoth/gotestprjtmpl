@@ -1,10 +1,125 @@
-#!/bin/bash
+#!/bin/sh
 set -euo pipefail
 
-if [ "$(git status --porcelain)" != "" ]; then
-  echo "There is uncommited changes; aborting"
-  git status --porcelain
-  exit 1
-fi
+CONFIG_FILE="release.yaml"
 
+function check-git() {
+  # Check that inside git repo
+  if [ "$(git rev-parse --is-inside-work-tree)" != "true" ]; then
+    eho "Not inside git repo; aborting"
+    exit 1
+  fi
+
+  if [ "$SKIP_GIT_CHECK" == "true" ]; then
+    echo "Skipping git check..."
+    return
+  fi
+
+  # Check that git index is clean
+  if [ "$(git status --porcelain)" != "" ]; then
+    echo "There is uncommited changes; aborting"
+    git status --porcelain
+    exit 1
+  fi
+}
+
+function check-tools() {
+  if [ "$SKIP_TOOLS_CHECK" == "true" ]; then
+    echo "Skipping tools check..."
+    return
+  fi
+
+  deps=("go" "golangci-lint" "govulncheck" "gomod2nix" "goreleaser" "git" "git-cliff" "yq")
+  for d in ${deps[@]}; do
+    if ! command -v "$d" >/dev/null 2>&1
+    then
+      echo "\"$d\" is not found in current environment; aborting"
+      exit 1
+    fi
+  done
+}
+
+# Input formats:
+#   `pass:path/to/secret:field` - load specific field
+#   `pass:path/to/secret` - laod whole content of secret file
+function load-pass() {
+  pass_file="$(echo "$1" | awk -F: '{print $2}')"
+  pass_field="$(echo "$1" | awk -F: '{print $3}')"
+  if [ "$pass_field" == "" ]; then
+    echo "Loading pass secret '$pass_file'..." >&2
+    pass show "$pass_file"
+  else
+    echo "Loading '$pass_field' from pass secret '$pass_file'..." >&2
+    pass show "$pass_file" | grep -i -m1 "^[[:space:]]*${pass_field}[[:space:]]*:" | sed -E 's/^[^:]+:[[:space:]]*//'
+  fi
+}
+
+# $1 - env variable name
+# $2 - source
+# If $2 == ENV, env var with name $1 must be set before running this script
+function load-secret() {
+  if [ "$2" == "ENV" ]; then
+    if eval "[ -z \"\${${1}:-}\" ]"; then
+        echo "Env var $1 must be set before running this script; aborting"
+        exit 1
+    fi
+    return
+  fi
+  # Skip loading secret from source if env var with name $1 alredy set
+  if eval "[ ! -z \"\${${1}:-}\" ]"; then
+    return
+  fi
+  source_type=$(echo "$2" | awk -F: '{print $1}')
+  # TODO: add biwarden loader
+  case "$source_type" in
+    pass)
+      export "$1=$(load-pass "$2")"
+      ;;
+    *)
+      echo "Unknown secret source type for $1; Check your $CONFIG_FILE; aborting"
+      ;;
+  esac
+}
+
+function read-config() {
+  if [ ! -f "$CONFIG_FILE" ]; then
+    echo "$CONFIG_FILE not found; aborting"
+    exit 1
+  fi
+
+  if [ "$(yq -r ".secrets" "$CONFIG_FILE")" != "null" ]; then
+    # Load secrets
+    while IFS='=' read -r key value; do
+      load-secret "$key" "$value"
+    done < <(
+      yq -r '.secrets  | to_entries[] | "\(.key)=\(.value // "")"' "$CONFIG_FILE"
+    )
+    # Load regular vars
+    while IFS='=' read -r key value; do
+      # Skip secrets dict
+      if [ "$key" == "secrets"]; then
+        return
+      fi
+      export "$key=$value"
+    done < <(
+      yq -r '. | to_entries[] | "\(.key)=\(.value // "")"' "$CONFIG_FILE"
+    )
+  fi
+}
+
+# TODO: add help flag
+# TODO: add flags to skip things
+# TODO: add flags to change config file
+
+check-git
+check-tools
+
+# cd to repo root
+cd "$(git rev-parse --show-toplevel)"
+
+read-config
+
+echo "$DEFAULT_GPG_FPR"
+echo "$GITHUB_TOKEN"
+echo "$TELEGRAM_TOKEN"
 
