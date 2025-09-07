@@ -1,4 +1,9 @@
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+## [0.10.1] - 2025-09-07
+
+### ⚙️ Miscellaneous Tasks
+
+- Add ko
 ## [0.10.0] - 2025-09-07
 
 ### 🚀 Features
@@ -18,6 +23,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 ### 💼 Other
 
+- Bump to v0.10.0
 - Bump to v0.10.0
 - Bump to v0.10.0
 - Bump to v0.10.0
