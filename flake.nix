@@ -44,6 +44,7 @@
           src = ./.;
           hooks = {
             commitizen.enable = true;
+            typos.enable = true;
             govet.enable = true;
             gofmt.enable = true;
             golangci-lint.enable = true;
@@ -88,6 +89,8 @@
           gomod2nix.packages.${system}.default
 
           ko
+
+          typos
 
           yq
           jq

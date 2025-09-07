@@ -17,7 +17,7 @@ function check-git() {
 
   # Check that git index is clean
   if [ "$(git status --porcelain)" != "" ]; then
-    echo "There is uncommited changes; aborting"
+    echo "There is uncommitted changes; aborting"
     git status --porcelain
     exit 1
   fi
@@ -63,7 +63,7 @@ function check-myrepo() {
 
 # Input formats:
 #   `pass:path/to/secret:field` - load specific field
-#   `pass:path/to/secret` - laod whole content of secret file
+#   `pass:path/to/secret` - load whole content of secret file
 function load-pass() {
   pass_file="$(echo "$1" | awk -F: '{print $2}')"
   pass_field="$(echo "$1" | awk -F: '{print $3}')"
@@ -96,7 +96,7 @@ function load-secret() {
     fi
     return
   fi
-  # Skip loading secret from source if env var with name $1 alredy set
+  # Skip loading secret from source if env var with name $1 already set
   if eval "[ ! -z \"\${${1}:-}\" ]"; then
     return
   fi
@@ -250,7 +250,7 @@ read-config
 
 echo "TOKENS: $GITHUB_TOKEN $TELEGRAM_TOKEN"
 
-# Check that requiered variables are set
+# Check that required variables are set
 echo "$PROJECT_NAME $MAINTAINER" > /dev/null
 
 check-myrepo
