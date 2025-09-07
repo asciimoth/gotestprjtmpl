@@ -247,6 +247,8 @@ prepare-go
 # - Push
 bump "$@"
 
+goreleaser release --clean --release-notes <(git cliff --latest)
+
 # Commit packages added to deb/rpm repo (if one was used)
 repo-save
 
