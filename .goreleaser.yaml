@@ -62,6 +62,18 @@ nfpms:
       - git # For example
     section: default
 
+kos:
+  - repositories: ["hub.docker.com/asciimoth/{{ .ProjectName }}"]
+    tags:
+      - "{{.Version}}"
+      - latest
+    bare: true
+    preserve_import_paths: false
+    platforms:
+      - linux/amd64
+      - linux/arm64
+      - linux/arm
+
 signs:
   - artifacts: all
     args: [ "-u", "{{ .Env.DEFAULT_GPG_FPR }}", "--output", "${signature}", "--detach-sign", "${artifact}" ]

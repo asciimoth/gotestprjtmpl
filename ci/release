@@ -29,7 +29,18 @@ function check-tools() {
     return
   fi
 
-  deps=("go" "golangci-lint" "govulncheck" "gomod2nix" "goreleaser" "git" "git-cliff" "yq" "jq")
+  deps=(
+    "go"
+    "golangci-lint"
+    "govulncheck"
+    "gomod2nix"
+    "goreleaser"
+    "git"
+    "git-cliff"
+    "yq"
+    "jq"
+    "ko"
+  )
   for d in ${deps[@]}; do
     if ! command -v "$d" >/dev/null 2>&1
     then
@@ -224,7 +235,9 @@ function repo-save() {
 }
 
 # TODO: add help flag
-# TODO: add flags to skip things
+# TODO: add flags to skip things in this script
+# TODO: add flags to skip stages in goreleaser workflow
+# TODO: pass down some goreleaser flags
 # TODO: add flags to change config file
 
 check-git
