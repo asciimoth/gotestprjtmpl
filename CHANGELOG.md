@@ -12,9 +12,11 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 ### 🐛 Bug Fixes
 
 - Fix go mod tidy git hook
+- Fdfsgdfsgsdsfgdfs
 
 ### 💼 Other
 
+- Bump to v0.10.0
 - Bump to v0.10.0
 - Bump to v0.10.0
 - Bump to v0.10.0
