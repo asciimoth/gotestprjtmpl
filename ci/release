@@ -39,6 +39,17 @@ function check-tools() {
   done
 }
 
+function check-myrepo() {
+  # If $MYREPO is not void
+  if [ "${MYREPO-}" != "" ]; then
+    # Check if $MYREPO is a valid dir
+    if [ ! -d "$MYREPO" ]; then
+      echo "Env var \$MYREPO is set but it is not a valid dir"
+      exit 1
+    fi
+  fi
+}
+
 # Input formats:
 #   `pass:path/to/secret:field` - load specific field
 #   `pass:path/to/secret` - laod whole content of secret file
@@ -93,6 +104,10 @@ function load-secret() {
 }
 
 function read-config() {
+  if [ "${SKIP_CONFIG-}" == "true" ]; then
+    echo "Skipping config reading..."
+    return
+  fi
   if [ ! -f "$CONFIG_FILE" ]; then
     echo "$CONFIG_FILE not found; aborting"
     exit 1
@@ -161,6 +176,8 @@ function prepare-go() {
 }
 
 function bump() {
+  # TODO: Check that there is changes still last version
+
   if [ ! "$#" -gt 0 ]; then
     NEW_VERSION="$(git cliff --bump --context | jq -r .[0].version)"
     CHANGELOG="$(git cliff --bump)"
@@ -191,6 +208,13 @@ function bump() {
   git push --tags
 }
 
+function repo-save() {
+  # If $MYREPO is not void
+  if [ "${MYREPO-}" != "" ]; then
+    "$MYREPO/maintain" save feat "add $PROJECT_NAME $NEW_VERSION"
+  fi
+}
+
 # TODO: add help flag
 # TODO: add flags to skip things
 # TODO: add flags to change config file
@@ -201,11 +225,22 @@ check-tools
 # cd to repo root
 cd "$(git rev-parse --show-toplevel)"
 
-#read-config
+read-config
+
+# Check that requiered variables are set
+echo "$PROJECT_NAME $MAINTAINER" > /dev/null
+
+check-myrepo
 
 prepare-go
 
+# - Bump version tag
+# - Generate changelog
+# - Push
 bump "$@"
+
+# Commit packages added to deb/rpm repo (if one was used)
+repo-save
 
 
 

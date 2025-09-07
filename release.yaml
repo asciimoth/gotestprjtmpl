@@ -1,4 +1,7 @@
+PROJECT_NAME: gotestprjtmpl
 DEFAULT_GPG_FPR: C5C84658CCFD7E8E71DEE933AF3AE54FC3A35C9F # ASCII Moth
+MAINTAINER: John Doe <jdoe@example.com>
+MYREPO: /home/admin/projects/testdebrpm
 
 secrets:
   GITHUB_TOKEN: pass:web/github.com:token_WritePackagesForGoreleaser2
