@@ -1,4 +1,3 @@
 # gotestprjtmpl
 
-AAAAAAAAAA
-asdfasfasdfasdf
+jkrwendnwjendwe
