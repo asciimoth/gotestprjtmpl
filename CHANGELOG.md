@@ -9,6 +9,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 - Add tests to ci/release
 - Some stuff
 - Sadfasfdasd
+- Fsdgsdg
 
 ### 🐛 Bug Fixes
 
@@ -17,6 +18,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 ### 💼 Other
 
+- Bump to v0.10.0
 - Bump to v0.10.0
 - Bump to v0.10.0
 - Bump to v0.10.0
