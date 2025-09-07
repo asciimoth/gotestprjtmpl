@@ -63,7 +63,7 @@ nfpms:
     section: default
 
 kos:
-  - repositories: ["hub.docker.com/asciimoth/{{ .ProjectName }}"]
+  - repositories: ["hub.docker.com/asciimoth/gotestprjtmpl"]
     tags:
       - "{{.Version}}"
       - latest
