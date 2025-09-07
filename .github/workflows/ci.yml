@@ -1,6 +1,10 @@
 name: Pull Request
 
-on: [pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
 
 permissions:
   contents: read #  to fetch code (actions/checkout)
@@ -39,9 +43,10 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
       - run: nix develop --command typos
-  commitizen:
+  commitizen-pr:
     name: Lint git commits
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'pull_request' }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -61,4 +66,14 @@ jobs:
           git fetch origin "$BASE_REF":"$BASE_REF" || true
           BASE_MERGE=$(git merge-base origin/${BASE_REF} HEAD)
           nix develop --command cz check --rev-range "${BASE_MERGE}..HEAD"
+  commitizen-push:
+    name: Lint git commit
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - run: |
+          git log -1 --pretty=%B > COMMIT
+          nix develop --command cz check --commit-msg-file COMMIT
 
