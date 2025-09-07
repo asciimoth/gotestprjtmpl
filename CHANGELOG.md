@@ -1,5 +1,5 @@
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-## [0.10.0] - 2025-09-06
+## [0.10.0] - 2025-09-07
 
 ### 🚀 Features
 
@@ -7,6 +7,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 - Add basic release script
 - Add bitwarden loader
 - Add tests to ci/release
+- Some stuff
 
 ### 🐛 Bug Fixes
 
@@ -14,6 +15,7 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 ### 💼 Other
 
+- Bump to v0.10.0
 - Bump to v0.10.0
 - Bump to v0.10.0
 
