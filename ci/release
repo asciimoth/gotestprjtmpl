@@ -92,15 +92,21 @@ function load-secret() {
   source_type=$(echo "$2" | awk -F: '{print $1}')
   case "$source_type" in
     pass)
-      export "$1=$(load-pass "$2")"
+      SECRET_VALUE="$(load-pass "$2")"
       ;;
     bitwarden)
-      export "$1=$(load-bitwarden "$2")"
+      SECRET_VALUE="$(load-bitwarden "$2")"
       ;;
     *)
       echo "Unknown secret source type for $1; Check your $CONFIG_FILE; aborting"
+      exit 1
       ;;
   esac
+  if [ "" == "$SECRET_VALUE" ]; then
+    echo "Value of $1 is not set; aborting"
+    exit 1
+  fi
+  export "$1=$SECRET_VALUE"
 }
 
 function read-config() {
@@ -226,6 +232,8 @@ check-tools
 cd "$(git rev-parse --show-toplevel)"
 
 read-config
+
+echo "TOKENS: $GITHUB_TOKEN $TELEGRAM_TOKEN"
 
 # Check that requiered variables are set
 echo "$PROJECT_NAME $MAINTAINER" > /dev/null

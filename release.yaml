@@ -5,7 +5,8 @@ MYREPO: /home/admin/projects/testdebrpm
 
 secrets:
   GITHUB_TOKEN: pass:web/github.com:token_WritePackagesForGoreleaser2
-  TELEGRAM_TOKEN: bitwarden:password:moth releasing bot
+  TELEGRAM_TOKEN: pass:telegram/bots/moth_releasing
+  #TELEGRAM_TOKEN: bitwarden:password:moth releasing bot
   #TELEGRAM_TOKEN2: bw:password:moth releasing bot
   #SECRET1: AAAAAA
   #SECRET2:
