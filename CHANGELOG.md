@@ -1,5 +1,14 @@
 AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+## [0.10.3] - 2025-09-07
+
+### ⚙️ Miscellaneous Tasks
+
+- *(fix)* Fix ko
 ## [0.10.2] - 2025-09-07
+
+### 💼 Other
+
+- Bump to v0.10.2
 
 ### ⚙️ Miscellaneous Tasks
 
