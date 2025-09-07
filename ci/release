@@ -207,6 +207,8 @@ function bump() {
 
   commit "bump: bump to $NEW_VERSION"
 
+  git tag "$NEW_VERSION"
+
   echo "Running git push..."
   git push
 
