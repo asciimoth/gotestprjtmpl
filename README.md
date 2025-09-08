@@ -1,6 +1,5 @@
 # gotestprjtmpl
 
-asdfasf
-asdfszadfsa
-dfasdfaa
-aasdfa
+sadfasfas
+fsdfasdf
+asdfasdf
