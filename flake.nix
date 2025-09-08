@@ -44,7 +44,15 @@
           src = ./.;
           hooks = {
             commitizen.enable = true;
-            typos.enable = true;
+            # typos.enable = true;
+            typos-commit = {
+              enable = true;
+              description = "Find typos in commit message";
+              entry = let script = pkgs.writeShellScript "typos-commit" ''
+                typos "$1"
+              ''; in builtins.toString script;
+              stages = [ "commit-msg" ];
+            };
             govet.enable = true;
             gofmt.enable = true;
             golangci-lint.enable = true;

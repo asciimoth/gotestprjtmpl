@@ -1,30 +1,58 @@
-AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+
+## [0.11.0] - 2025-09-08
+
+### Features
+
+- Add basic http example
+
+### Bug Fixes
+
+- *(ci)* Fix PR workflow
+
+### Other
+
+- Add typos
+- Add PR workflow
+- Add ci workflow
+- Sdfsdf
+- Rwetwente
+- Sfsdfsdfsdfsfsdafsdfas
+- Aaaaaaaaaaa
+- Fdgsdfgsdfgdsffgsdgsdfg
+- Add ci workflow
+- Dfsgsdffd
+- Fix ci workflow
+- Add coveralls report
+- Downgrade uuid dependency
+- Fdgfsdgfdsgsdfg
+- Dfgsdfgdsfgdsfg
+
+### Documentation
+
+- Add pull request tempalte
+- Update README.md
+- Update changelog scheme
 ## [0.10.3] - 2025-09-07
 
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - *(fix)* Fix ko
+- Bump to v0.10.3
 ## [0.10.2] - 2025-09-07
 
-### 💼 Other
-
-- Bump to v0.10.2
-
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - *(fix)* Fix ko
+- Bump to v0.10.2
 ## [0.10.1] - 2025-09-07
 
-### 💼 Other
-
-- Bump to v0.10.1
-
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Add ko
+- Bump to v0.10.1
 ## [0.10.0] - 2025-09-07
 
-### 🚀 Features
+### Features
 
 - Add VERSION file
 - Add basic release script
@@ -34,26 +62,12 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 - Sadfasfdasd
 - Fsdgsdg
 
-### 🐛 Bug Fixes
+### Bug Fixes
 
 - Fix go mod tidy git hook
 - Fdfsgdfsgsdsfgdfs
 
-### 💼 Other
-
-- Bump to v0.10.0
-- Bump to v0.10.0
-- Bump to v0.10.0
-- Bump to v0.10.0
-- Bump to v0.10.0
-- Bump to v0.10.0
-- Bump to v0.10.0
-
-### 📚 Documentation
-
-- Add basic instructions about flake.nix usage
-
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Add nix flake
 - Aaaaaaaaaaa
@@ -66,114 +80,122 @@ AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 - Add commit message linting hook
 - Fddgfdsgdsgdsfgfdsg
 - Aaaaaaaaaaa
+- Bump to v0.10.0
+- Bump to v0.10.0
+- Bump to v0.10.0
+- Bump to v0.10.0
+- Bump to v0.10.0
+- Bump to v0.10.0
+- Bump to v0.10.0
+
+### Documentation
+
+- Add basic instructions about flake.nix usage
 ## [0.9.5] - 2025-09-04
 
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Update tg announce message template
 ## [0.9.4] - 2025-09-03
 
-### 🐛 Bug Fixes
+### Bug Fixes
 
 - Fix tg
 ## [0.9.3] - 2025-09-03
 
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Add telegram announce
 ## [0.9.2] - 2025-09-03
 
-### 🐛 Bug Fixes
+### Bug Fixes
 
 - Fix goreleaser config
 ## [0.9.1] - 2025-09-03
 
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Add custom publisher for goreleaser
 ## [0.9.0] - 2025-08-30
 
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Aaaaaaaa
 ## [0.8.0] - 2025-08-30
 
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Aaaaaaaa
 ## [0.7.0] - 2025-08-30
 
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Aaaaaaaa
 ## [0.6.0] - 2025-08-30
 
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Aaaaaaaa
 ## [0.5.0] - 2025-08-30
 
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Aaaaaaaa
 ## [0.4.0] - 2025-08-30
 
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Aaaaaaaa
 ## [0.3.2] - 2025-08-30
 
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Remove things from goreleaser config
 ## [0.3.1] - 2025-08-30
 
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Update changelog
 - Update goreleaser config
 ## [0.3.0] - 2025-08-30
 
-### 🚀 Features
+### Features
 
 - Sadfassdfasdf
 
-### 🐛 Bug Fixes
+### Bug Fixes
 
 - Add W
 
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Wooooooooooooo
 - Chore things
 ## [0.2.0] - 2025-08-29
 
-### 🚀 Features
+### Features
 
 - Aaaaaaaa
 
-### 💼 Other
-
-- Version 0.1.0 → 0.2.0
-
-### ⚙️ Miscellaneous Tasks
+### Other
 
 - Update goreleaser config
+- Version 0.1.0 → 0.2.0
 ## [0.1.0] - 2025-08-28
 
-### 🚀 Features
+### Features
 
 - Add goreleaser
 
-### 💼 Other
+### Other
 
 - Version 0.0.2 → 0.1.0
 ## [0.0.2] - 2025-08-28
 
-### 🐛 Bug Fixes
+### Bug Fixes
 
 - Init project
 
-### 💼 Other
+### Other
 
 - Version 0.0.1 → 0.0.2
