@@ -66,7 +66,7 @@ jobs:
         uses: cachix/install-nix-action@v25
         with:
           nix_path: nixpkgs=channel:nixos-unstable
-      - run: nix develop --command typos
+      - run: nix develop --command typos --exclude CHANGELOG.md
   commitizen-pr:
     name: Lint git commits
     runs-on: ubuntu-latest
@@ -90,6 +90,9 @@ jobs:
           git fetch origin "$BASE_REF":"$BASE_REF" || true
           BASE_MERGE=$(git merge-base origin/${BASE_REF} HEAD)
           nix develop --command cz check --rev-range "${BASE_MERGE}..HEAD"
+          # check for typos
+          nix develop --command git cliff -u > UNRELEASED_CHANGELOG
+          nix develop --command typos UNRELEASED_CHANGELOG
   commitizen-push:
     name: Lint git commit
     runs-on: ubuntu-latest
