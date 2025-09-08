@@ -2,5 +2,5 @@ schema = 3
 
 [mod]
   [mod."github.com/google/uuid"]
-    version = "v1.6.0"
-    hash = "sha256-VWl9sqUzdOuhW0KzQlv0gwwUQClYkmZwSydHG2sALYw="
+    version = "v1.0.0"
+    hash = "sha256-G9cSHM+/D930l4RzIFLHSttfJwssZ1CbSMaYbrNcQqQ="
