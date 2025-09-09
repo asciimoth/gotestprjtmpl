@@ -1,5 +1,5 @@
 
-## [0.11.0] - 2025-09-08
+## [0.11.0] - 2025-09-09
 
 ### Features
 
@@ -26,6 +26,12 @@
 - Downgrade uuid dependency
 - Fdgfsdgfdsgsdfg
 - Dfgsdfgdsfgdsfg
+- Add typos lint for commit messages
+- Add typos check for commit messages
+
+### Refactor
+
+- Update ci/release
 
 ### Documentation
 
