@@ -1,4 +1,9 @@
 
+## [0.11.3] - 2025-09-09
+
+### Documentation
+
+- Add useless newlines to readme
 ## [0.11.2] - 2025-09-09
 
 ### Documentation
