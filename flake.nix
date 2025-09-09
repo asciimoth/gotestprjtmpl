@@ -99,6 +99,7 @@
           ko
 
           typos
+          reuse
 
           yq
           jq

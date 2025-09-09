@@ -83,6 +83,16 @@ function check-myrepo() {
   fi
 }
 
+function check-gpg() {
+  # if $DEFAULT_GPG_FPR is not empty
+  if [[ -n "${DEFAULT_GPG_FPR-}" ]]; then
+    if [ "$(gpg --list-secret-keys --with-colons "$DEFAULT_GPG_FPR" 2>/dev/null | grep "sec")" == "" ]; then
+      echo "No private gpg key found for $DEFAULT_GPG_FPR; aborting"
+      exit 1
+    fi
+  fi
+}
+
 # Input formats:
 #   `pass:path/to/secret:field` - load specific field
 #   `pass:path/to/secret` - load whole content of secret file
@@ -319,6 +329,8 @@ cd "$(git rev-parse --show-toplevel)"
 read-config
 
 echo "TOKENS: $GITHUB_TOKEN $TELEGRAM_TOKEN"
+
+check-gpg
 
 # Check that required variables are set
 echo "$PROJECT_NAME $MAINTAINER" > /dev/null
