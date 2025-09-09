@@ -1,4 +1,18 @@
 
+## [0.11.1] - 2025-09-09
+
+### Bug Fixes
+
+- Foor
+
+### Other
+
+- Add license files
+- Remove CCO license
+- Add license info to readme
+- Add check for gpg fingerprint in ci/release
+- Merge pr #7
+- Add placeholder
 ## [0.11.0] - 2025-09-09
 
 ### Features
@@ -28,6 +42,7 @@
 - Dfgsdfgdsfgdsfg
 - Add typos lint for commit messages
 - Add typos check for commit messages
+- Bump to v0.11.0
 
 ### Refactor
 
