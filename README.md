@@ -1,10 +1,5 @@
 # gotestprjtmpl
 
-asdfasf
-asdfszadfsa
-dfasdfaa
-aasdfa
-
 ## License
 This project is licensed under either of
 
