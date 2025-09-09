@@ -1,4 +1,9 @@
 
+## [0.11.2] - 2025-09-09
+
+### Documentation
+
+- Update readme
 ## [0.11.1] - 2025-09-09
 
 ### Bug Fixes
