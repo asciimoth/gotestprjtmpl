@@ -2,10 +2,6 @@
 
 PLACEHOLDER FOR PROJECT DESCRIPTION
 
-
-
-
-
 ## License
 This project is licensed under either of
 
