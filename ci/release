@@ -1,30 +1,53 @@
-#!/bin/sh
+#!/usr/bin/env bash
 set -euo pipefail
 
 CONFIG_FILE="release.yaml"
+GORELEASER_FLAGS=""
+
+print_help() {
+  cat <<EOF
+Usage: $(basename "$0") [GLOBAL OPTIONS] [--] [BUMP-ARG]
+
+Global options:
+-h, --help Show this help
+--skip-git-check Skip git repository checks
+--skip-tools-check Skip checking required tools
+--skip-config Skip reading the config file
+--skip-go-generate Skip running 'go generate'
+--skip-go-tidy Skip running 'go mod tidy'
+--skip-govulncheck Skip running govulncheck
+--config-file <file> Path to config file (default: release.yaml)
+--myrepo <path> Path to your local repo helper (sets MYREPO)
+--goreleaser-flags <flags> Extra flags to pass to goreleaser (quoted)
+
+Any remaining arguments after '--' or unknown options are passed to the 'bump' function
+(e.g. major|minor|patch or an explicit version).
+
+EOF
+}
 
 function check-git() {
   # Check that inside git repo
-  if [ "$(git rev-parse --is-inside-work-tree)" != "true" ]; then
-    eho "Not inside git repo; aborting"
+  if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    echo "Not inside git repo; aborting" >&2
     exit 1
   fi
 
-  if [ "${SKIP_GIT_CHECK-}" == "true" ]; then
+  if [[ "${SKIP_GIT_CHECK-}" == "true" ]]; then
     echo "Skipping git check..."
     return
   fi
 
   # Check that git index is clean
-  if [ "$(git status --porcelain)" != "" ]; then
-    echo "There is uncommitted changes; aborting"
+  if [[ -n "$(git status --porcelain)" ]]; then
+    echo "There are uncommitted changes; aborting" >&2
     git status --porcelain
     exit 1
   fi
 }
 
 function check-tools() {
-  if [ "${SKIP_TOOLS_CHECK-}" == "true" ]; then
+  if [[ "${SKIP_TOOLS_CHECK-}" == "true" ]]; then
     echo "Skipping tools check..."
     return
   fi
@@ -41,21 +64,20 @@ function check-tools() {
     "jq"
     "ko"
   )
-  for d in ${deps[@]}; do
-    if ! command -v "$d" >/dev/null 2>&1
-    then
-      echo "\"$d\" is not found in current environment; aborting"
+  for d in "${deps[@]}"; do
+    if ! command -v "$d" >/dev/null 2>&1; then
+      echo "\"$d\" is not found in current environment; aborting" >&2
       exit 1
     fi
   done
 }
 
 function check-myrepo() {
-  # If $MYREPO is not void
-  if [ "${MYREPO-}" != "" ]; then
+  # If $MYREPO is not empty
+  if [[ -n "${MYREPO-}" ]]; then
     # Check if $MYREPO is a valid dir
-    if [ ! -d "$MYREPO" ]; then
-      echo "Env var \$MYREPO is set but it is not a valid dir"
+    if [[ ! -d "$MYREPO" ]]; then
+      echo "Env var \$MYREPO is set but it is not a valid dir" >&2
       exit 1
     fi
   fi
@@ -234,11 +256,59 @@ function repo-save() {
   fi
 }
 
-# TODO: add help flag
-# TODO: add flags to skip things in this script
-# TODO: add flags to skip stages in goreleaser workflow
-# TODO: pass down some goreleaser flags
-# TODO: add flags to change config file
+# --- Parse global options (stop at first non-global or '--') ---
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -h|--help)
+      print_help
+      exit 0
+      ;;
+    --skip-git-check)
+      SKIP_GIT_CHECK=true
+      shift
+      ;;
+    --skip-tools-check)
+      SKIP_TOOLS_CHECK=true
+      shift
+      ;;
+    --skip-config)
+      SKIP_CONFIG=true
+      shift
+      ;;
+    --skip-go-generate)
+      SKIP_GO_GENERATE=true
+      shift
+      ;;
+    --skip-go-tidy)
+      SKIP_GO_TIDY=true
+      shift
+      ;;
+    --skip-govulncheck)
+      SKIP_GOVULN_CHECK=true
+      shift
+      ;;
+    --config-file)
+      CONFIG_FILE="$2"
+      shift 2
+      ;;
+    --myrepo)
+      MYREPO="$2"
+      shift 2
+      ;;
+    --goreleaser-flags)
+      GORELEASER_FLAGS="$2"
+      shift 2
+      ;;
+    --)
+      shift
+      break
+      ;;
+    *)
+      # stop parsing on first positional (assume it's for bump)
+      break
+      ;;
+  esac
+done
 
 check-git
 check-tools
@@ -262,13 +332,14 @@ prepare-go
 # - Push
 bump "$@"
 
-goreleaser release --clean --release-notes <(git cliff --latest)
+# Allow extra goreleaser flags from CLI
+if [[ -n "${GORELEASER_FLAGS-}" ]]; then
+  echo "Running goreleaser with extra flags: ${GORELEASER_FLAGS}"
+  goreleaser release --clean ${GORELEASER_FLAGS} --release-notes <(git cliff --latest)
+else
+  goreleaser release --clean --release-notes <(git cliff --latest)
+fi
 
 # Commit packages added to deb/rpm repo (if one was used)
 repo-save
-
-
-
-
-
 
