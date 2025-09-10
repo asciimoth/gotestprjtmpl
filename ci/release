@@ -225,8 +225,6 @@ function prepare-go() {
 }
 
 function bump() {
-  # TODO: Check that there is changes still last version
-
   if [ ! "$#" -gt 0 ]; then
     NEW_VERSION="$(git cliff --bump --context | jq -r .[0].version)"
     CHANGELOG="$(git cliff --bump)"

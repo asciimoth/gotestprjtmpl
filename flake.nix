@@ -100,6 +100,7 @@
 
           typos
           reuse
+          gnumake
 
           yq
           jq
