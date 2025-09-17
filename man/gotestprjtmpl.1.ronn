@@ -1,0 +1,24 @@
+gotestprjtmpl(1) -- do something
+================================
+
+## SYNOPSIS
+`gotestprjtmpl` [<format>...] <file>...<br>
+`gotestprjtmpl` `-m`|`--man` <file>...<br>
+`gotestprjtmpl` `-S`|`--server` <file>...<br>
+`gotestprjtmpl` `--pipe` <file><br>
+`gotestprjtmpl` &lt; <file><br>
+`gotestprjtmpl` `-E`|`--encoding` <encoding> ...
+
+## DESCRIPTION
+**Gotestprjtmpl** do something. See also help(1).
+
+Lorem ipsum dolor `sit` amet, consectetur adipiscing elit <file>s file.
+Donec varius lacus `--man` sed lorem scelerisque dignissim.
+Duis vestibulum tellus vitae quam posuere dictum.
+
+
+
+
+
+
+
