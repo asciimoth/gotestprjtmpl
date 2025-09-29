@@ -101,6 +101,8 @@
           typos
           reuse
           gnumake
+          ronn
+          strace
 
           yq
           jq

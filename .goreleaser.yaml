@@ -8,12 +8,13 @@
 
 version: 2
 
-# before:
-#   hooks:
-#     # You may remove this if you don't use go modules.
-#     - go mod tidy
-#     # you may remove this if you don't need go generate
-#     - go generate ./...
+before:
+  hooks:
+    # # You may remove this if you don't use go modules.
+    # - go mod tidy
+    # # you may remove this if you don't need go generate
+    # - go generate ./...
+    - gzip -f -n -k -9 ./man/{{ .ProjectName }}.1
 
 builds:
   - env:
@@ -46,6 +47,10 @@ archives:
     format_overrides:
       - goos: windows
         formats: [zip]
+    files:
+      - README.md
+      - LICENSE*
+      - man/{{ .ProjectName }}.1.gz  # include the gzipped man (useful for packaging)
 
 nfpms:
   - maintainer: "{{ .Env.MAINTAINER }}"
@@ -61,6 +66,10 @@ nfpms:
     recommends:
       - git # For example
     section: default
+    contents:
+      # map the gzipped man page into the package's man directory
+      - src: ./man/{{ .ProjectName }}.1.gz
+        dst: /usr/share/man/man1/{{ .ProjectName }}.1.gz
 
 kos:
   - repositories: ["asciimoth/gotestprjtmpl"]
