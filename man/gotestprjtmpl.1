@@ -1,21 +1,317 @@
-.\" generated with Ronn-NG/v0.10.1
-.\" http://github.com/apjanke/ronn-ng/tree/0.10.1
-.TH "GOTESTPRJTMPL" "1" "January 1980" ""
-.SH "NAME"
-\fBgotestprjtmpl\fR \- do something
-.SH "SYNOPSIS"
-\fBgotestprjtmpl\fR [\fIformat\fR\|\.\|\.\|\.] \fIfile\fR\|\.\|\.\|\.
-.br
-\fBgotestprjtmpl\fR \fB\-m\fR|\fB\-\-man\fR \fIfile\fR\|\.\|\.\|\.
-.br
-\fBgotestprjtmpl\fR \fB\-S\fR|\fB\-\-server\fR \fIfile\fR\|\.\|\.\|\.
-.br
-\fBgotestprjtmpl\fR \fB\-\-pipe\fR \fIfile\fR
-.br
-\fBgotestprjtmpl\fR < \fIfile\fR
-.br
-\fBgotestprjtmpl\fR \fB\-E\fR|\fB\-\-encoding\fR \fIencoding\fR \|\.\|\.\|\.
-.SH "DESCRIPTION"
-\fBGotestprjtmpl\fR do something\. See also help(1)\.
-.P
-Lorem ipsum dolor \fBsit\fR amet, consectetur adipiscing elit \fIfile\fRs file\. Donec varius lacus \fB\-\-man\fR sed lorem scelerisque dignissim\. Duis vestibulum tellus vitae quam posuere dictum\.
+.\" Manpage for version
+.TH version 1 "September 29, 2025" "version 0.1.0" "User Commands"
+.SH NAME
+version \- simple multi-source project version checker and updater
+
+.SH SYNOPSIS
+.B version
+[\fIglobal-flags\fR]
+.RI [ \fIcommand\fR ] [ \fIargs...\fR ]
+
+.SH DESCRIPTION
+\fBversion\fR is a small command-line utility for reading, comparing and writing semantic-versioning (SemVer) values
+across multiple project sources (git tags, package manifests, pyproject, Cargo.toml, arbitrary files, etc).
+It is intended for use in developer workflows and CI to ensure all version declarations remain in sync,
+and for safely bumping or setting a new project version across configured files.
+
+If invoked without a subcommand, \fBversion\fR behaves as \fBversion get\fR.
+
+.SH GLOBAL OPTIONS
+.TP
+.B \-h, \-\-help
+Show brief help and exit.
+.TP
+.B \-c, \-\-config \fIPATH\fR
+Use \fIPATH\fR as configuration file. If omitted the tool searches for \fI./version.toml\fR then \fIpyproject.toml\fR
+(looking for a \fI[tool.version]\fR table).
+.TP
+.B \-s, \-\-strict
+Enable strict mode: during \fBget\fR and similar operations any source reporting a lower version than the maximum
+is treated as an error. By default strict mode is disabled to support pre-commit and other workflows where git tags
+may be absent or lagging.
+.TP
+.B \-n, \-\-dry-run
+(For writing subcommands) Show what would be changed without modifying files or creating git tags.
+.TP
+.B \-v, \-\-verbose
+Increase logging verbosity. May be supplied multiple times.
+.TP
+.B \-\-ignored \fIFILE\fR
+Ignore \fIFILE\fR for this run (can be repeated). Accepts glob patterns.
+.TP
+.B \-\-readonly \fIFILE\fR
+Treat \fIFILE\fR as read-only for this run (can be repeated). Accepts glob patterns.
+
+.SH EXIT STATUS
+.TP
+.B 0
+Success. For \fBget\fR this usually means all checked sources are consistent or the requested value was printed.
+.TP
+.B 1
+General error (IO error, parse error, command invocation failed, etc).
+.TP
+.B 2
+Version mismatch detected (used by \fBget\fR when inconsistent values are found).
+.TP
+.B 3
+Invalid arguments, validation error, or malformed semver input.
+
+.SH CONFIGURATION
+\fBversion\fR reads configuration from either a dedicated \fIversion.toml\fR file in the current directory or from the
+\fI[tool.version]\fR table inside \fIpyproject.toml\fR. When both are absent the built-in defaults listed in the
+\fIDEFAULT SOURCES\fR section are used.
+
+Configuration keys:
+.IP
+\fIDefaultVersion\fR (string) — fallback SemVer to use when no sources report a version. Default: \"0.1.0\" unless overridden.
+.IP
+\fIStrict\fR (bool) — enable strict mode by default.
+.IP
+\fIIgnoredFiles\fR (array of strings) — file globs to ignore for all subcommands.
+.IP
+\fIReadOnlyFiles\fR (array of strings) — file globs that \fBset\fR and \fBbump\fR will not modify.
+.IP
+\fISources\fR (table) — keyed by CamelCase source names. Each source has a \fIType\fR and optional parameters specific to type.
+
+Example \fIversion.toml\fR:
+.RS 4
+.nf
+DefaultVersion = "1.1.1"
+Strict = true
+ReadOnlyFiles = ["fileA", "*.toml"]
+
+[Sources.Name1]
+Type = "git"
+ReadOnly = true
+
+[Sources.AnotherName]
+Type = "json"
+Path = "file.json"
+KeyPath = ["key1", "key2"]
+.fi
+.RE
+
+Example \fIpyproject.toml\fR snippet:
+.RS 4
+.nf
+[tool.version]
+DefaultVersion = "1.1.1"
+Strict = true
+
+[tool.version.Sources.PackageJson]
+Type = "json"
+Path = "package.json"
+KeyPath = ["version"]
+.fi
+.RE
+
+.SH SOURCE TYPES
+Each source has some shared options and some type-specific options.
+
+Common options:
+.TP
+.B Type
+Source type: \fIjson\fR, \fItoml\fR, \fIyaml\fR, \fIregexp\fR, \fItool\fR, \fIgit\fR.
+.TP
+.B VPrefix
+Bool-like: \fItrue\fR, \fIfalse\fR or \fIauto\fR. Controls whether a leading \f\"v\f\" prefix should be preserved when writing values.
+\fIauto\fR (default) preserves existing style or chooses sensible default for the source.
+
+Type-specific fields:
+.IP "\fIjson, toml, yaml\fR"
+\fIPath\fR — path to file. \fIKeyPath\fR — array of keys locating the version value inside the file (for nested structures).
+.IP "\fIregexp\fR"
+Like the structured file types but \fIKeyPath\fR is instead an array of regular expressions that select a substring to read/update.
+.IP "\fItool\fR"
+\fICmd\fR — array of strings: command and its args to execute.
+\fIPipe\fR — which stream to parse: \fIstdout\fR, \fIstderr\fR, or \fIboth\fR (default: stdout).
+\fIExpectedStatus\fR — expected exit code of the tool.
+\fICD\fR — directory to run the command in.
+\fIEnv\fR — map of environment variables to set.
+.IP "\fIgit\fR"
+Reads SemVer-compatible tags from git. On \fBget\fR it may return at most one value (the latest tag).
+On \fBset\fR it creates a new tag for the latest commit.
+Options: \fICD\fR, \fIEnv\fR, \fIReadOnly\fR (bool).
+
+.SH DEFAULT SOURCES
+If no configuration is found the following default sources are used:
+.RS 4
+.nf
+[Sources.PackageJson]
+Type = "json"
+VPrefix = "false"
+Path = "package.json"
+KeyPath = ["version"]
+
+[Sources.PyProject]
+Type = "toml"
+VPrefix = "false"
+Path = "pyproject.toml"
+KeyPath = ["project", "version"]
+
+[Sources.Cargo]
+Type = "toml"
+VPrefix = "false"
+Path = "Cargo.toml"
+KeyPath = ["package", "version"]
+
+[Sources.Git]
+Type = "git"
+VPrefix = "auto"
+.fi
+.RE
+
+.SH SUBCOMMANDS
+
+.SMALLCAPS get
+.TP
+.B Syntax:
+.RS
+.nf
+version get [\fIfallback-or-part\fR] [\fISource...\fR]
+.fi
+.RE
+
+Fetch versions from selected sources and compare them.
+
+Behavior:
+.IP
+If no \fISource\fR names supplied, all configured (or default) sources are checked.
+.IP
+\fIfallback-or-part\fR may be:
+.RS 4
+.nf
+• A literal semver (X.Y.Z) — used as fallback if no source contains a version.
+• One of the words: \fImajor\fR, \fIminor\fR, \fIpatch\fR — print only that version component.
+.fi
+.RE
+
+Exit status:
+.TP
+.B 0
+All checked sources agree (or requested value printed).
+.TP
+.B 2
+Inconsistency detected (non-strict). If in strict mode any source lower-than-max will cause the tool to return 2.
+
+.SMALLCAPS set
+.TP
+.B Syntax:
+.RS
+.nf
+version set \fI<semver>\fR [\fISource...\fR]
+.fi
+.RE
+
+Write the specified semver to all configured writable sources (or the list of sources supplied).
+Rules:
+.IP
+Respect per-source \fIVPrefix\fR policy when writing (force/strip/preserve leading \f\"v\f\").
+.IP
+Skip or error on read-only files depending on flags and config. Use \fIReadOnlyFiles\fR config or \fI--readonly\fR flag to mark files.
+.IP
+Use \fI--dry-run\fR to preview changes.
+
+Exit codes:
+.TP
+.B 0
+All requested writes succeeded (or would have in dry-run).
+.TP
+.B 1
+One or more write failures (IO, permission, invalid format).
+
+.SMALLCAPS bump
+.TP
+.B Syntax:
+.RS
+.nf
+version bump [\fImajor|minor|patch\fR] [\fIfallback-or-base\fR] [\fISource...\fR]
+.fi
+.RE
+
+Read the current versions from the selected sources (or the default set), take the maximum as the base (or use the supplied base/fallback),
+increment requested component (default: \fIminor\fR), write the result back to writable sources, and print the new version.
+
+Notes:
+.IP
+If a literal semver is provided as the base it is used instead of reading sources.
+.IP
+Bumping follows SemVer rules: bumping major resets minor and patch to 0; bumping minor resets patch to 0.
+
+.SMALLCAPS max
+.TP
+.B Syntax:
+.RS
+.nf
+version max [\fIitems...\fR]
+.fi
+.RE
+
+Return the maximum version among the provided items. Items can be source names or literal semver values.
+If nothing provided the configured DefaultVersion or \"0.1.0\" is printed.
+
+.SH EXAMPLES
+.TP
+Read versions from defaults and print agreed value:
+.RS 4
+.nf
+$ version
+1.2.3
+.fi
+.RE
+
+.TP
+Check only package.json and git:
+.RS 4
+.nf
+$ version get PackageJson Git
+PackageJson: 1.2.3
+Git: v1.2.3
+All sources agree: 1.2.3
+.fi
+.RE
+
+.TP
+Set version to 2.0.0 across writable sources (dry run):
+.RS 4
+.nf
+$ version set 2.0.0 --dry-run
+Would update:
+  package.json: "version" -> "2.0.0"
+  Cargo.toml: package.version -> "2.0.0"
+  git: create tag v2.0.0
+.fi
+.RE
+
+.TP
+Bump minor version using git as base only:
+.RS 4
+.nf
+$ version bump minor Git
+1.3.0
+(fi. wrote 1.3.0 to all writable sources)
+.fi
+.RE
+
+.SH FILES
+.TP
+.I ./version.toml
+Project-local config file (optional).
+.TP
+.I pyproject.toml
+If \fI[tool.version]\fR table present, used as configuration.
+
+.SH SEE ALSO
+.TP
+.BR git (1),
+.BR jq (1),
+.BR toml (5)
+
+.SH AUTHORS
+Written by the project author. Suggestions, bug reports and patches welcome.
+
+.SH BUGS
+Report issues to the project's issue tracker. Mention how your local config looks and which subcommand produced the problem.
+
+.SH COPYRIGHT
+This man page is provided under the same license as the \fBversion\fR project.
