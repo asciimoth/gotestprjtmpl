@@ -35,6 +35,14 @@
         src = ./.;
         modules = ./gomod2nix.toml;
         # buildInputs = with pkgs; [ ];
+        nativeBuildInputs = [ pkgs.gzip ];
+        # after the default install, put the man into $out/share/man/man1/
+        postInstall = ''
+          mkdir -p $out/share/man/man1
+          if [ -f ${./man/gotestprjtmpl.1} ]; then
+            gzip -n -c -k ${./man/gotestprjtmpl.1} > $out/share/man/man1/gotestprjtmpl.1.gz
+          fi
+        '';
       };
 
       release = pkgs.writeShellScriptBin "release" (builtins.readFile ./ci/release);
