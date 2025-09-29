@@ -92,7 +92,7 @@
         };
       };
     in {
-      devShell = pkgs.mkShell {
+      devShells.default = pkgs.mkShell {
         inherit (checks.pre-commit-check) shellHook;
         buildInputs = with pkgs; [
           go
@@ -119,6 +119,6 @@
         ];
       };
 
-      defaultPackage = app;
+      packages.default = app;
     });
 }
