@@ -83,6 +83,14 @@
               ''; in builtins.toString script;
               stages = [ "pre-commit" ];
             };
+            version-check = {
+              enable = true;
+              description = "Makes sure SemVer values from all sources are matching";
+              entry = let script = pkgs.writeShellScript "versionhook" ''
+                version get
+              ''; in builtins.toString script;
+              stages = [ "pre-commit" ];
+            };
             gomod2nix = {
               enable = true;
               description = "Generates gomod2nix.toml";
