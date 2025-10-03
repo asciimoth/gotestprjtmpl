@@ -14,6 +14,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
       inputs.flake-utils.follows = "flake-utils";
     };
+    version = {
+      url = "github:asciimoth/version";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
   outputs = {
     self,
@@ -21,6 +25,7 @@
     flake-utils,
     pre-commit-hooks,
     gomod2nix,
+    version,
     ...
   }:
     flake-utils.lib.eachDefaultSystem (system: let
@@ -103,6 +108,7 @@
           govulncheck
 
           gomod2nix.packages.${system}.default
+          version.packages.${system}.default
 
           ko
 
